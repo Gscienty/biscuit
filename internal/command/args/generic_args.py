@@ -6,7 +6,7 @@ class GenericArgs(CommandArgs):
         self._arguments = arguments
 
     def parse(self):
-        return None
+        return True
 
     def arguments(self):
         return self._arguments

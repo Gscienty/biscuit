@@ -105,13 +105,13 @@ class ShellParser:
             if status.esc:
                 status.parse_esc(r)
                 continue
-            if r is '\\':
+            if r == '\\':
                 status.parse_transfer_mean(r)
                 continue
             if self.__is_space(r):
                 status.parse_space(r)
                 continue
-            if r is '(':
+            if r == '(':
                 if status.parse_bracket():
                     continue
                 else:
@@ -127,7 +127,7 @@ class ShellParser:
         return status.args
 
     def __is_space(self, r):
-        return r is ' ' or r is '\t' or r is '\r' or r is '\n'
+        return r == ' ' or r == '\t' or r == '\r' or r == '\n'
 
     def __run_shell(self, backtick, dir):
         pass
@@ -147,6 +147,7 @@ class ShellArgs(CommandArgs):
             return False
         self.__parse_command()
         self.__parse_who()
+        return True
 
     def __valid(self):
         if not self.__is_ssh_connection():
@@ -186,7 +187,7 @@ class ShellArgs(CommandArgs):
 
     def __parse_command(self):
         args = ShellParser().parse(os.environ.get('SSH_ORIGINAL_COMMAND'))
-        if len(args) > 1 and args[0] is 'git':
+        if len(args) > 1 and args[0] == 'git':
             cmd = '%s-%s' % (args[0], args[1])
-            args = [cmd].extend(args[2:])
+            args = [cmd] + args[2:]
         self._ssh_args = args
