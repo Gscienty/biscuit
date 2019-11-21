@@ -1,6 +1,6 @@
 import os
 import re
-from internal.command.args.__init__ import CommandArgs
+from internal.command.args.common import CommandArgs
 
 
 class ShellParserStatus:
@@ -12,7 +12,7 @@ class ShellParserStatus:
         self.single_quo = False
         self.back_quo = False
         self.dollar_quo = False
-        self.backtick = False
+        self.backtick = ''
         self.pos = -1
         self.got = False
 
@@ -129,9 +129,6 @@ class ShellParser:
     def __is_space(self, r):
         return r == ' ' or r == '\t' or r == '\r' or r == '\n'
 
-    def __run_shell(self, backtick, dir):
-        pass
-
 
 class ShellArgs(CommandArgs):
     def __init__(self, arguments):
@@ -142,10 +139,18 @@ class ShellArgs(CommandArgs):
     def arguments(self):
         return self._arguments
 
+    def ssh_arguments(self):
+        return self._ssh_args
+
+    def command_type(self):
+        return self._cmd_type
+
     def parse(self):
         if not self.__valid():
             return False
         self.__parse_command()
+        if len(self._ssh_args) >= 1:
+            self._cmd_type = self._ssh_args
         self.__parse_who()
         return True
 
