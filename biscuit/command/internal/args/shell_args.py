@@ -1,6 +1,4 @@
 import os
-import re
-from internal.command.args.common import CommandArgs
 
 
 class ShellParserStatus:
@@ -130,14 +128,10 @@ class ShellParser:
         return r == ' ' or r == '\t' or r == '\r' or r == '\n'
 
 
-class ShellArgs(CommandArgs):
-    def __init__(self, arguments):
-        self._arguments = arguments
+class ShellArgs():
+    def __init__(self):
         self._ssh_args = []
         self._cmd_type = None
-
-    def arguments(self):
-        return self._arguments
 
     def ssh_arguments(self):
         return self._ssh_args
@@ -150,8 +144,7 @@ class ShellArgs(CommandArgs):
             return False
         self.__parse_command()
         if len(self._ssh_args) >= 1:
-            self._cmd_type = self._ssh_args
-        self.__parse_who()
+            self._cmd_type = self._ssh_args[0]
         return True
 
     def __valid(self):
@@ -166,29 +159,6 @@ class ShellArgs(CommandArgs):
 
     def __is_valid_ssh_command(self):
         return os.environ.get('SSH_ORIGINAL_COMMAND') is not None
-
-    def __parse_who(self):
-        for argument in self._arguments:
-            key_id = self.__parse_key_id(argument)
-            if key_id is not None:
-                self._key_id = key_id
-                break
-            username = self.__parse_username(argument)
-            if username is not None:
-                self._username = username
-                break
-
-    def __parse_key_id(self, argument):
-        result = re.search(r'\bkey-(?P<keyid>\d+)\b', argument)
-        if result is None:
-            return None
-        return result.group(1)
-
-    def __parse_username(self, argument):
-        result = re.search(r'\busername-(?P<usernam>\S+)\b', argument)
-        if result is None:
-            return None
-        return result.group(1)
 
     def __parse_command(self):
         args = ShellParser().parse(os.environ.get('SSH_ORIGINAL_COMMAND'))

@@ -1,0 +1,24 @@
+import sys
+from biscuit.command.internal.io import IO
+from biscuit.command.internal.executable import Executable
+from biscuit.command.internal.config import Config
+from biscuit.command.intenral import command_new
+from flask import Blueprint
+import click
+
+biscuit_shell = Blueprint('biscuit_shell', __name__)
+
+
+@biscuit_shell.cli.command('shell')
+@click.argument('userkey')
+@click.argument('username')
+def do_biscuit_shell(key, user):
+    io = IO(sys.stdin, sys.stdout, sys.stderr)
+    executable = Executable()
+    config = Config(executable.home())
+    if not config.load():
+        exit(1)
+    command = command_new(executable, config, io)
+    if command is None:
+        exit(1)
+    command.execute()
