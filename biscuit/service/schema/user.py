@@ -1,7 +1,9 @@
 from mongoengine import (
     Document,
     StringField,
-    BooleanField
+    BooleanField,
+    EmailField,
+    ReferenceField
 )
 
 
@@ -13,3 +15,9 @@ class User(Document):
     )
     password = StringField(required=True)
     is_available = BooleanField(required=True)
+    email = ReferenceField('UserEmail')
+
+
+class UserEmail(Document):
+    email = EmailField(required=True, unique=True)
+    user = ReferenceField('User')
