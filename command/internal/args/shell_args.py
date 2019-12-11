@@ -128,10 +128,12 @@ class ShellParser:
         return r == ' ' or r == '\t' or r == '\r' or r == '\n'
 
 
-class ShellArgs():
-    def __init__(self):
+class ShellArgs:
+    def __init__(self, executable):
         self._ssh_args = []
         self._cmd_type = None
+        self._is_ssh_connection = executable.is_ssh_connection()
+        self._command = executable.command()
 
     def ssh_arguments(self):
         return self._ssh_args
@@ -148,17 +150,7 @@ class ShellArgs():
         return True
 
     def __valid(self):
-        if not self.__is_ssh_connection():
-            return False
-        if not self.__is_valid_ssh_command():
-            return False
-        return True
-
-    def __is_ssh_connection(self):
-        return os.environ.get('SSH_CONNECTION') is not None
-
-    def __is_valid_ssh_command(self):
-        return os.environ.get('SSH_ORIGINAL_COMMAND') is not None
+        return self._is_ssh_connection and self._command is not None
 
     def __parse_command(self):
         args = ShellParser().parse(os.environ.get('SSH_ORIGINAL_COMMAND'))

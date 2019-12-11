@@ -1,0 +1,6 @@
+ipc_server:
+    host: unix://biscuit.sock
+shell:
+    out-format:
+        git-receive-pack-checking-permission:
+            waiting for checking whether user '%s' has push permission in repo '%s' ...

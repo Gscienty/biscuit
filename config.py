@@ -1,7 +1,7 @@
 import os
 import yaml
 
-CONFIG_FILENAME = '.biscuit-config.yml'
+CONFIG_FILENAME = '.biscuit-config.yaml'
 
 
 class Config:
@@ -13,6 +13,7 @@ class Config:
             return False
         config_file_path = os.path.join(self._home, CONFIG_FILENAME)
         if not os.path.exists(config_file_path):
+            print(config_file_path)
             return False
         with open(config_file_path, 'r') as config_file:
             config_content = config_file.read()
